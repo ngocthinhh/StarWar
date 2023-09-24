@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 4577909147047976426}
   - component: {fileID: 5270858183651002303}
   - component: {fileID: 6028723079184889364}
+  - component: {fileID: 558900055080441079}
   m_Layer: 0
   m_Name: BulletEnemy
   m_TagString: BulletEnemy
@@ -70,6 +71,18 @@ CapsuleCollider2D:
   m_Offset: {x: 0.0010641068, y: -0.035177022}
   m_Size: {x: 0.0722346, y: 0.1424647}
   m_Direction: 0
+--- !u!114 &558900055080441079
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4577909147047976425}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f166e20e965b764b84f1ea0cf5ae3ef, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4577909147073961046
 GameObject:
   m_ObjectHideFlags: 0

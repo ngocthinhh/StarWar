@@ -19,6 +19,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject bulletBag;
 
+    [SerializeField] private GameObject circle;
+    [SerializeField] private GameObject pivot;
+
     private void Awake()
     {
         // Info
@@ -38,6 +41,9 @@ public class PlayerController : MonoBehaviour
         playerInfo.SetMaxHealth(health);
         playerInfo.SetStrength(strength);
         playerInfo.SetSpeed(speed);
+
+        // Other
+        bulletBag.GetComponent<BulletBagController>().SetPlayer(gameObject);
     }
 
     private void Update()
@@ -47,12 +53,21 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        Movement();
+        if (playerInfo.GetCurrentHealth() <= 0f)
+        {
+            animator.Play("Boom");
+        }
+        else
+        {
+            Movement();
 
-        Rotate();
+            Rotate();
 
-        HandleCamera();
+            HandleCamera();
+        }
     }
+
+
 
     // GIOI HAN CAMERA KHONG RA KHOI VUNG bAN DO
     private void HandleCamera()
@@ -79,9 +94,23 @@ public class PlayerController : MonoBehaviour
     // DI CHUYEN
     private void Movement()
     {
-        if (playerInput.verticalInput > 0.2f)
+        if (playerInput.horizontalInput > 0.2f || playerInput.horizontalInput < -0.2f
+            || playerInput.verticalInput > 0.2f || playerInput.verticalInput < -0.2f)
         {
-            transform.Translate(Vector2.up * playerInput.verticalInput * playerInfo.GetSpeed() * Time.deltaTime);
+            float speedMax = 0f;
+            float speedHori = Mathf.Abs(playerInput.horizontalInput);
+            float speedVerti = Mathf.Abs(playerInput.verticalInput);
+
+            if (speedHori >= speedVerti)
+            {
+                speedMax = speedHori;
+            }
+            else
+            {
+                speedMax = speedVerti;
+            }
+
+            transform.Translate(Vector2.up * speedMax * playerInfo.GetSpeed() * Time.deltaTime);
             animator.Play("Move");
         }
         else
@@ -94,13 +123,22 @@ public class PlayerController : MonoBehaviour
     // XOAY TAU
     private void Rotate()
     {
-        if (playerInput.horizontalInput > 0.2f)
+        //if (playerInput.horizontalInput > 0.2f)
+        //{
+        //    transform.Rotate(Vector3.forward * -playerInput.horizontalInput * 180f * Time.deltaTime);
+        //}
+        //else if (playerInput.horizontalInput < -0.2f)
+        //{
+        //    transform.Rotate(Vector3.forward * -playerInput.horizontalInput * 180f * Time.deltaTime);
+        //}
+
+        if (playerInput.horizontalInput > 0.2f || playerInput.horizontalInput < -0.2f 
+            || playerInput.verticalInput > 0.2f || playerInput.verticalInput < -0.2f)
         {
-            transform.Rotate(Vector3.forward * -playerInput.horizontalInput * 180f * Time.deltaTime);
-        }
-        else if (playerInput.horizontalInput < -0.2f)
-        {
-            transform.Rotate(Vector3.forward * -playerInput.horizontalInput * 180f * Time.deltaTime);
+            Vector3 diff = circle.transform.position - pivot.transform.position;
+            diff.Normalize();
+            float rot_z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.Euler(0f, 0f, rot_z + 90f);
         }
     }
 
@@ -108,5 +146,13 @@ public class PlayerController : MonoBehaviour
     public void Shoot()
     {
         Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("BulletEnemy"))
+        {
+            playerInfo.DecreaseHealth(50f);
+        }
     }
 }

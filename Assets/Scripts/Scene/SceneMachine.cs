@@ -6,12 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class SceneMachine : MonoBehaviour
 {
+    // PAUSE CANVAS
+    [SerializeField] private GameObject pauseCanvas;
+    [SerializeField] private GameObject optionPause;
+
+    // MENU CANVAS
+    [SerializeField] private GameObject menuCanvas;
+    [SerializeField] private GameObject continueButton;
+
+    [SerializeField] private int currentScene = 0;
+
     // ================== STATE MACHINE ===================
     public enum State
     {
         Menu,
-        Start,
         Level1,
+        Level2,
         Quit
     }
     public State currentState = State.Menu;
@@ -20,12 +30,12 @@ public class SceneMachine : MonoBehaviour
         switch (currentState)
         {
             case State.Menu:
-
-                break;
-            case State.Start:
-
+                
                 break;
             case State.Level1:
+
+                break;
+            case State.Level2:
 
                 break;
             case State.Quit:
@@ -41,11 +51,11 @@ public class SceneMachine : MonoBehaviour
             case State.Menu:
                 Menu();
                 break;
-            case State.Start:
-                
-                break;
             case State.Level1:
                 StartGame();
+                break;
+            case State.Level2:
+
                 break;
             case State.Quit:
                 Quit();
@@ -57,19 +67,60 @@ public class SceneMachine : MonoBehaviour
     //================================================
 
 
+    public static SceneMachine Instance { get; private set; }
     private void Awake()
     {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(this.gameObject);
+        }
+        else
+        {
+            Instance = this;
+        }
         DontDestroyOnLoad(gameObject);
     }
 
     public void Menu()
     {
         SceneManager.LoadScene(0);
+        Time.timeScale = 1;
+
+        optionPause.SetActive(false);
+        pauseCanvas.SetActive(false);
+
+        menuCanvas.SetActive(true);
+
+        if (currentScene > 0)
+        {
+            continueButton.SetActive(true);
+        }
+    }
+
+    public void NextLevel()
+    {
+        currentScene += 1;
+        SceneManager.LoadScene(currentScene);
+    }
+
+    public void ContinueGame()
+    {
+        SceneManager.LoadScene(currentScene);
+
+        pauseCanvas.SetActive(true);
+
+        menuCanvas.SetActive(false);
     }
 
     public void StartGame()
     {
         SceneManager.LoadScene(1);
+
+        pauseCanvas.SetActive(true);
+
+        menuCanvas.SetActive(false);
+
+        currentScene = 1;
     }
 
     public void Quit()
@@ -77,5 +128,16 @@ public class SceneMachine : MonoBehaviour
         Application.Quit();
     }
 
+    public void Pause()
+    {
+        Time.timeScale = 0;
+        optionPause.SetActive(true);
+    }
+
+    public void Continue()
+    {
+        Time.timeScale = 1;
+        optionPause.SetActive(false);
+    }
 
 }
