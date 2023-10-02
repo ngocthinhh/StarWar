@@ -106,6 +106,8 @@ public class SceneMachine : MonoBehaviour
 
     public void Menu()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         SceneManager.LoadScene(0);
         Time.timeScale = 1;
 
@@ -118,6 +120,8 @@ public class SceneMachine : MonoBehaviour
         {
             continueButton.SetActive(true);
         }
+
+        AudioManager.Instance.PlayBackground(AudioManager.Instance.menu);
     }
 
     public void OpenNextLevel()
@@ -127,13 +131,38 @@ public class SceneMachine : MonoBehaviour
 
     public void NextLevel()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         currentScene += 1;
         SceneManager.LoadScene(currentScene);
         nextLevel.SetActive(false);
+
+        if (currentScene == 1)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
+        }
+        else if (currentScene == 2)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level2);
+        }
+        else if (currentScene == 3)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level3);
+        }
+        else if (currentScene == 4)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level4);
+        }
+        else if (currentScene == 5)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level5);
+        }
     }
 
     public void ContinueGame()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         SceneManager.LoadScene(currentScene);
 
         Time.timeScale = 1f;
@@ -141,10 +170,33 @@ public class SceneMachine : MonoBehaviour
         pauseCanvas.SetActive(true);
 
         menuCanvas.SetActive(false);
+
+        if (currentScene == 1)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
+        }
+        else if (currentScene == 2)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level2);
+        }
+        else if (currentScene == 3)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level3);
+        }
+        else if (currentScene == 4)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level4);
+        }
+        else if (currentScene == 5)
+        {
+            AudioManager.Instance.PlayBackground(AudioManager.Instance.level5);
+        }
     }
 
     public void StartGame()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         SceneManager.LoadScene(1);
 
         pauseCanvas.SetActive(true);
@@ -152,23 +204,35 @@ public class SceneMachine : MonoBehaviour
         menuCanvas.SetActive(false);
 
         currentScene = 1;
+
+        AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
     }
 
     public void Quit()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         Application.Quit();
     }
 
     public void Pause()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         Time.timeScale = 0;
         optionPause.SetActive(true);
+
+        AudioManager.Instance.Pause();
     }
 
     public void Continue()
     {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
         Time.timeScale = 1;
         optionPause.SetActive(false);
+
+        AudioManager.Instance.Continue();
     }
 
 }

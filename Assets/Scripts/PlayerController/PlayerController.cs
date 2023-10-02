@@ -75,6 +75,9 @@ public class PlayerController : MonoBehaviour
         if (playerInfo.GetCurrentHealth() <= 0f)
         {
             animator.Play("Boom");
+
+            AudioManager.Instance.PlayEffect(AudioManager.Instance.boom);
+
             optionLose.SetActive(true);
 
             if (!isDie)
@@ -225,11 +228,9 @@ public class PlayerController : MonoBehaviour
     {
         if (canShoot)
         {
+            AudioManager.Instance.PlayEffect(AudioManager.Instance.lazerShoot);
+
             Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
-
-            //Instantiate(bullet, transform.position + new Vector3(0.1f, 0f, 0f), transform.rotation, bulletBag.transform);
-
-            //Instantiate(bullet, transform.position + new Vector3(-0.1f, 0f, 0f), transform.rotation, bulletBag.transform);
         }
     }
 
@@ -285,6 +286,8 @@ public class PlayerController : MonoBehaviour
     {
         playerInfo.DecreaseHealth(collision.gameObject.GetComponent<BulletEnemy>().GetStrength());
         LoadHealthBar();
+
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.hurt);
     }
 
     public void AddHealth(float health)
