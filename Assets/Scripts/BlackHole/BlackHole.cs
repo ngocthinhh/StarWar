@@ -24,5 +24,7 @@ public class BlackHole : MonoBehaviour
         player.GetComponent<PlayerController>().enabled = false;
 
         SceneMachine.Instance.OpenNextLevel();
+
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.blackHoleIn);
     }
 }

@@ -19,6 +19,8 @@ public class EnemyPlaneController : MonoBehaviour
     [SerializeField] private GameObject bullet;
     [SerializeField] private GameObject bulletBag;
 
+    [SerializeField] private AudioSource audioSource;
+
     private void Awake()
     {
         // Info
@@ -28,6 +30,8 @@ public class EnemyPlaneController : MonoBehaviour
         animator = GetComponentInChildren<Animator>();
 
         player = transform.parent.gameObject.GetComponent<EnemyBase>().GetPlayer();
+
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -112,6 +116,9 @@ public class EnemyPlaneController : MonoBehaviour
             GameObject bulletEnemy = Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
             bulletEnemy.GetComponent<BulletEnemy>().SetStrength(enemyInfo.GetStrength());
 
+            //audioSource.clip = AudioManager.Instance.lazerShoot;
+            //audioSource.Play();
+
             if (gameObject.CompareTag("Boss"))
             {
                 bulletEnemy.transform.localScale = new Vector2(5f, 5f);
@@ -127,6 +134,9 @@ public class EnemyPlaneController : MonoBehaviour
                 GameObject bulletEnemy = Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
                 bulletEnemy.GetComponent<BulletEnemy>().SetStrength(enemyInfo.GetStrength());
                 bulletEnemy.transform.localScale = new Vector2(5f, 5f);
+
+                //audioSource.clip = AudioManager.Instance.lazerShoot;
+                //audioSource.Play();
             }
 
             yield return new WaitForSeconds(0.2f);
@@ -135,6 +145,9 @@ public class EnemyPlaneController : MonoBehaviour
                 GameObject bulletEnemy = Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
                 bulletEnemy.GetComponent<BulletEnemy>().SetStrength(enemyInfo.GetStrength());
                 bulletEnemy.transform.localScale = new Vector2(5f, 5f);
+
+                //audioSource.clip = AudioManager.Instance.lazerShoot;
+                //audioSource.Play();
             }
         }
 

@@ -25,6 +25,10 @@ public class BlackHoleEnding : MonoBehaviour
 
         player.GetComponent<PlayerController>().enabled = false;
 
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.blackHoleIn);
+
+        AudioManager.Instance.Pause();
+
         ending.SetActive(true);
     }
 }

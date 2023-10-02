@@ -33,6 +33,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Sprite buttonShoot;
     [SerializeField] private Sprite buttonBanShoot;
 
+    [SerializeField] private AudioSource audioSource;
+
     public int round = 1;
 
     private void Awake()
@@ -46,6 +48,7 @@ public class PlayerController : MonoBehaviour
         // Other
         animator = GetComponentInChildren<Animator>();
         camera = Camera.main;
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Start()
@@ -75,8 +78,6 @@ public class PlayerController : MonoBehaviour
         if (playerInfo.GetCurrentHealth() <= 0f)
         {
             animator.Play("Boom");
-
-            AudioManager.Instance.PlayEffect(AudioManager.Instance.boom);
 
             optionLose.SetActive(true);
 
@@ -228,7 +229,8 @@ public class PlayerController : MonoBehaviour
     {
         if (canShoot)
         {
-            AudioManager.Instance.PlayEffect(AudioManager.Instance.lazerShoot);
+            audioSource.clip = AudioManager.Instance.lazerShoot;
+            audioSource.Play();
 
             Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
         }
@@ -286,8 +288,6 @@ public class PlayerController : MonoBehaviour
     {
         playerInfo.DecreaseHealth(collision.gameObject.GetComponent<BulletEnemy>().GetStrength());
         LoadHealthBar();
-
-        AudioManager.Instance.PlayEffect(AudioManager.Instance.hurt);
     }
 
     public void AddHealth(float health)
