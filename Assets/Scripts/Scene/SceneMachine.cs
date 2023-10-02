@@ -14,14 +14,19 @@ public class SceneMachine : MonoBehaviour
     [SerializeField] private GameObject menuCanvas;
     [SerializeField] private GameObject continueButton;
 
+    [SerializeField] private GameObject nextLevel;
+
     [SerializeField] private int currentScene = 0;
 
     // ================== STATE MACHINE ===================
     public enum State
     {
         Menu,
-        Level1,
-        Level2,
+        StartGame,
+        ContinueGame,
+        NextLevel,
+        Pause,
+        Continue,
         Quit
     }
     public State currentState = State.Menu;
@@ -32,10 +37,19 @@ public class SceneMachine : MonoBehaviour
             case State.Menu:
                 
                 break;
-            case State.Level1:
+            case State.StartGame:
 
                 break;
-            case State.Level2:
+            case State.ContinueGame:
+
+                break;
+            case State.NextLevel:
+
+                break;
+            case State.Pause:
+
+                break;
+            case State.Continue:
 
                 break;
             case State.Quit:
@@ -51,11 +65,20 @@ public class SceneMachine : MonoBehaviour
             case State.Menu:
                 Menu();
                 break;
-            case State.Level1:
+            case State.StartGame:
                 StartGame();
                 break;
-            case State.Level2:
-
+            case State.ContinueGame:
+                ContinueGame();
+                break;
+            case State.NextLevel:
+                NextLevel();
+                break;
+            case State.Pause:
+                Pause();
+                break;
+            case State.Continue:
+                Continue();
                 break;
             case State.Quit:
                 Quit();
@@ -97,15 +120,23 @@ public class SceneMachine : MonoBehaviour
         }
     }
 
+    public void OpenNextLevel()
+    {
+        nextLevel.SetActive(true);
+    }
+
     public void NextLevel()
     {
         currentScene += 1;
         SceneManager.LoadScene(currentScene);
+        nextLevel.SetActive(false);
     }
 
     public void ContinueGame()
     {
         SceneManager.LoadScene(currentScene);
+
+        Time.timeScale = 1f;
 
         pauseCanvas.SetActive(true);
 

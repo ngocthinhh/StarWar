@@ -9,12 +9,25 @@ public class CameraController : MonoBehaviour
     private bool canFollowX = true;
     private bool canFollowY = true;
 
+    public bool moveSlow = false;
+
     private void Update()
     {
-        //transform.position = new Vector3(player.transform.position.x, player.transform.position.y, -10f);
 
-        FollowXPlayer();
-        FollowYPlayer();
+        if (!moveSlow)
+        {
+            FollowXPlayer();
+            FollowYPlayer();
+        }
+        else if (moveSlow)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(transform.position.x, player.transform.position.y, -10), Time.deltaTime * 2f);
+            
+            if (Vector2.Distance(transform.position, player.transform.position) < 0.1f || transform.position.y >= 18f || transform.position.y <= -18)
+            {
+                moveSlow = false;
+            }
+        }
     }
 
     private void FollowXPlayer()

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BulletEnemy : MonoBehaviour
 {
+    [SerializeField] private float strength;
+
     private void Update()
     {
         Move();
@@ -29,9 +31,19 @@ public class BulletEnemy : MonoBehaviour
         }
     }
 
+    public void SetStrength(float num)
+    {
+        strength = num;
+    }
+
+    public float GetStrength()
+    {
+        return strength;
+    }
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Enemy"))
+        if (!collision.CompareTag("Enemy") && !collision.CompareTag("Boss") && !collision.CompareTag("HealthSafe"))
         {
             Destroy(gameObject);
         }

@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -21,6 +22,18 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private GameObject circle;
     [SerializeField] private GameObject pivot;
+
+    [SerializeField] private GameObject healthBar;
+    [SerializeField] private GameObject strengthBar;
+    [SerializeField] private GameObject speedBar;
+    [SerializeField] private GameObject timeBar;
+    [SerializeField] private GameObject optionLose;
+
+    [SerializeField] private GameObject buttonShootImage;
+    [SerializeField] private Sprite buttonShoot;
+    [SerializeField] private Sprite buttonBanShoot;
+
+    public int round = 1;
 
     private void Awake()
     {
@@ -44,6 +57,12 @@ public class PlayerController : MonoBehaviour
 
         // Other
         bulletBag.GetComponent<BulletBagController>().SetPlayer(gameObject);
+        healthBar.GetComponent<Slider>().maxValue = playerInfo.GetMaxHealth();
+
+        LoadHealthBar();
+        LoadStrengthBar();
+        LoadSpeedBar();
+        LoadTimeBar(0f);
     }
 
     private void Update()
@@ -56,6 +75,13 @@ public class PlayerController : MonoBehaviour
         if (playerInfo.GetCurrentHealth() <= 0f)
         {
             animator.Play("Boom");
+            optionLose.SetActive(true);
+
+            if (!isDie)
+            {
+                isDie = true;
+                StartCoroutine(AfterDie());
+            }
         }
         else
         {
@@ -64,15 +90,22 @@ public class PlayerController : MonoBehaviour
             Rotate();
 
             HandleCamera();
+
+            HandleTime();
         }
     }
 
-
+    private bool isDie = false;
+    IEnumerator AfterDie()
+    {
+        yield return new WaitForSeconds(2f);
+        Time.timeScale = 0f;
+    }
 
     // GIOI HAN CAMERA KHONG RA KHOI VUNG bAN DO
     private void HandleCamera()
     {
-        if (transform.position.x > -12 && transform.position.x < 12)
+        if (transform.position.x > -13 && transform.position.x < 13)
         {
             camera.gameObject.GetComponent<CameraController>().SetCanFollowX(true);
         }
@@ -81,13 +114,41 @@ public class PlayerController : MonoBehaviour
             camera.gameObject.GetComponent<CameraController>().SetCanFollowX(false);
         }
 
-        if (transform.position.y > -18 && transform.position.y < 18)
+        // ROUND 1
+        if (round.Equals(1))
         {
-            camera.gameObject.GetComponent<CameraController>().SetCanFollowY(true);
+            if (transform.position.y > -18 && transform.position.y < -15)
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(true);
+            }
+            else
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(false);
+            }
         }
-        else
+        // ROUND 2
+        else if (round.Equals(2))
         {
-            camera.gameObject.GetComponent<CameraController>().SetCanFollowY(false);
+            if (transform.position.y > -18 && transform.position.y < -2.5f)
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(true);
+            }
+            else
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(false);
+            }
+        }
+        // ROUND 3
+        else if (round >= 3)
+        {
+            if (transform.position.y > -18 && transform.position.y < 18)
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(true);
+            }
+            else
+            {
+                camera.gameObject.GetComponent<CameraController>().SetCanFollowY(false);
+            }
         }
     }
 
@@ -111,11 +172,26 @@ public class PlayerController : MonoBehaviour
             }
 
             transform.Translate(Vector2.up * speedMax * playerInfo.GetSpeed() * Time.deltaTime);
-            animator.Play("Move");
+
+            if (playerInfo.GetCurrentHealth() <= 20f)
+            {
+                animator.Play("MoveDanger");
+            }
+            else
+            {
+                animator.Play("Move");
+            }
         }
         else
         {
-            animator.Play("Idle");
+            if (playerInfo.GetCurrentHealth() <= 20f)
+            {
+                animator.Play("IdleDanger");
+            }
+            else
+            {
+                animator.Play("Idle");
+            }
         }
 
     }
@@ -143,16 +219,133 @@ public class PlayerController : MonoBehaviour
     }
 
     // BAN 
+
+    private bool canShoot = true;
     public void Shoot()
     {
-        Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
+        if (canShoot)
+        {
+            Instantiate(bullet, transform.position, transform.rotation, bulletBag.transform);
+
+            //Instantiate(bullet, transform.position + new Vector3(0.1f, 0f, 0f), transform.rotation, bulletBag.transform);
+
+            //Instantiate(bullet, transform.position + new Vector3(-0.1f, 0f, 0f), transform.rotation, bulletBag.transform);
+        }
+    }
+
+    // LOAD BAR UI
+    public void LoadHealthBar()
+    {
+        healthBar.GetComponent<Slider>().value = playerInfo.GetCurrentHealth();
+    }
+
+    public void LoadStrengthBar()
+    {
+        strengthBar.GetComponent<Slider>().value = playerInfo.GetStrength();
+    }
+
+    public void LoadSpeedBar()
+    {
+        speedBar.GetComponent<Slider>().value = playerInfo.GetSpeed();
+    }
+
+    public void LoadTimeBar(float num)
+    {
+        timeBar.GetComponent<Slider>().value = num;
+    }
+    //
+
+    // KIEM SOAT THOI GIAN TRUNG HIEU UNG
+    public float numTime = 0f;
+    public void HandleTime()
+    {
+        if (numTime > 0f)
+        {
+            numTime -= Time.deltaTime;
+
+            LoadTimeBar(numTime);
+        }
+        else
+        {
+            // SAU KHI HET THOI GIAN THI RESET LAI BTH
+            playerInfo.SetStrength(strength);
+            playerInfo.SetSpeed(speed);
+
+            LoadStrengthBar();
+            LoadSpeedBar();
+
+            buttonShootImage.GetComponent<Image>().sprite = buttonShoot;
+
+            canShoot = true;
+        }
+    }
+    //
+
+    public void LostHealth(Collider2D collision)
+    {
+        playerInfo.DecreaseHealth(collision.gameObject.GetComponent<BulletEnemy>().GetStrength());
+        LoadHealthBar();
+    }
+
+    public void AddHealth(float health)
+    {
+        playerInfo.IncreaseHealth(health);
+        LoadHealthBar();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.CompareTag("BulletEnemy"))
+        if (collision.CompareTag("BulletGreen"))
         {
-            playerInfo.DecreaseHealth(50f);
+            LostHealth(collision);
+        }
+        else if (collision.CompareTag("BulletOrange"))
+        {
+            LostHealth(collision);
+
+            // GIAM DAMAGE
+            playerInfo.SetStrength(1f);
+            LoadStrengthBar();
+            numTime = 5f;
+            //
+        }
+        else if (collision.CompareTag("BulletGolden"))
+        {
+            LostHealth(collision);
+
+            // HU HONG SUNG
+            canShoot = false;
+            buttonShootImage.GetComponent<Image>().sprite = buttonBanShoot;
+            numTime = 5f;
+            //
+        }
+        else if (collision.CompareTag("BulletWhite"))
+        {
+            LostHealth(collision);
+
+            // GIAM TOC DO
+            playerInfo.SetSpeed(2f);
+            LoadSpeedBar();
+            numTime = 5f;
+            //
+        }
+        else if (collision.CompareTag("BulletPurple"))
+        {
+            LostHealth(collision);
+
+            // TAO THEM ENEMY
+
+            //
+        }
+
+        if (collision.CompareTag("HealthSafe"))
+        {
+            // HOI MAU VA XOA BO HIEU UNG
+            AddHealth(20f);
+            numTime = 0f;
+            LoadTimeBar(numTime);
+
+            Destroy(collision.gameObject);
         }
     }
 }
