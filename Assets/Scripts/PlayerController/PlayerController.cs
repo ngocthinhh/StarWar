@@ -223,7 +223,6 @@ public class PlayerController : MonoBehaviour
     }
 
     // BAN 
-
     private bool canShoot = true;
     public void Shoot()
     {
