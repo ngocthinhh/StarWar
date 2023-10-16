@@ -37,6 +37,11 @@ public class PlayerInfo : MonoBehaviour
     public void DecreaseHealth(float heal)
     {
         currentHealth -= heal;
+
+        if (currentHealth < 0f)
+        {
+            currentHealth = 0f;
+        }
     }
     //=====================================
 

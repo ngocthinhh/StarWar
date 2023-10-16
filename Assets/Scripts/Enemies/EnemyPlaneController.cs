@@ -68,7 +68,8 @@ public class EnemyPlaneController : MonoBehaviour
             if (Vector3.Distance(transform.position, player.transform.position) > 2f)
             {
                 // FOLLOW PLAYER IF DONT ENOUGH DISTANCE
-                transform.position = Vector2.MoveTowards(transform.position, player.transform.position, enemyInfo.GetSpeed() * Time.deltaTime);
+                transform.position = Vector2.MoveTowards(transform.position, player.transform.position,
+                    enemyInfo.GetSpeed() * Time.deltaTime);
 
             }
             else

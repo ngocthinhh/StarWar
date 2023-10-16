@@ -43,7 +43,9 @@ public class BulletEnemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (!collision.CompareTag("Enemy") && !collision.CompareTag("Boss") && !collision.CompareTag("HealthSafe"))
+        if (!collision.CompareTag("Enemy") && !collision.CompareTag("Boss") && !collision.CompareTag("HealthSafe")
+            && !collision.CompareTag("BulletPlayer") && !collision.CompareTag("BulletOrange") && !collision.CompareTag("BulletGreen")
+            && !collision.CompareTag("BulletWhite") && !collision.CompareTag("BulletPurple") && !collision.CompareTag("BulletGolden"))
         {
             Destroy(gameObject);
         }

@@ -115,7 +115,10 @@ public class PlayerForLevel5 : MonoBehaviour
         if (collision.CompareTag("BulletPurple"))
         {
             // TAO THEM ENEMY
-            GameObject blackHoleEnemy = Instantiate(blackHolePrefab, new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0f), Quaternion.identity, blackHoleEnemies.transform);
+            GameObject blackHoleEnemy = Instantiate(blackHolePrefab,
+                new Vector3(Random.Range(minX, maxX), Random.Range(minY, maxY), 0f),
+                Quaternion.identity, blackHoleEnemies.transform);
+
             blackHoleEnemy.GetComponent<BlackHoleEnemy>().enemyBase = enemyBaseUsing;
             blackHoleEnemy.GetComponent<BlackHoleEnemy>().bulletBagEnemy = bulletBagEnemy;
             //

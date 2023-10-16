@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class SceneMachine : MonoBehaviour
 {
@@ -17,6 +18,10 @@ public class SceneMachine : MonoBehaviour
     [SerializeField] private GameObject nextLevel;
 
     [SerializeField] private int currentScene = 0;
+
+    [SerializeField] private GameObject textEasy;
+    [SerializeField] private GameObject textHard;
+    [SerializeField] private string modeString;
 
     // ================== STATE MACHINE ===================
     public enum State
@@ -104,6 +109,31 @@ public class SceneMachine : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void Start()
+    {
+        SelectEasyMode();
+    }
+
+    public void SelectEasyMode()
+    {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
+        textEasy.GetComponent<Text>().color = Color.green;
+        textHard.GetComponent<Text>().color = Color.white;
+
+        modeString = "Easy";
+    }
+
+    public void SelectHardMode()
+    {
+        AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
+
+        textEasy.GetComponent<Text>().color = Color.white;
+        textHard.GetComponent<Text>().color = Color.green;
+
+        modeString = "Hard";
+    }
+
     public void Menu()
     {
         AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
@@ -119,6 +149,15 @@ public class SceneMachine : MonoBehaviour
         if (currentScene > 0)
         {
             continueButton.SetActive(true);
+
+            if (currentScene >= 6)
+            {
+                SelectHardMode();
+            }
+            else if (currentScene >= 1)
+            {
+                SelectEasyMode();
+            }
         }
 
         AudioManager.Instance.PlayBackground(AudioManager.Instance.menu);
@@ -137,23 +176,23 @@ public class SceneMachine : MonoBehaviour
         SceneManager.LoadScene(currentScene);
         nextLevel.SetActive(false);
 
-        if (currentScene == 1)
+        if (currentScene == 1 || currentScene == 6)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
         }
-        else if (currentScene == 2)
+        else if (currentScene == 2 || currentScene == 7)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level2);
         }
-        else if (currentScene == 3)
+        else if (currentScene == 3 || currentScene == 8)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level3);
         }
-        else if (currentScene == 4)
+        else if (currentScene == 4 || currentScene == 9)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level4);
         }
-        else if (currentScene == 5)
+        else if (currentScene == 5 || currentScene == 10)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level5);
         }
@@ -171,23 +210,23 @@ public class SceneMachine : MonoBehaviour
 
         menuCanvas.SetActive(false);
 
-        if (currentScene == 1)
+        if (currentScene == 1 || currentScene == 6)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
         }
-        else if (currentScene == 2)
+        else if (currentScene == 2 || currentScene == 7)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level2);
         }
-        else if (currentScene == 3)
+        else if (currentScene == 3 || currentScene == 8)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level3);
         }
-        else if (currentScene == 4)
+        else if (currentScene == 4 || currentScene == 9)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level4);
         }
-        else if (currentScene == 5)
+        else if (currentScene == 5 || currentScene == 10)
         {
             AudioManager.Instance.PlayBackground(AudioManager.Instance.level5);
         }
@@ -197,13 +236,20 @@ public class SceneMachine : MonoBehaviour
     {
         AudioManager.Instance.PlayEffect(AudioManager.Instance.click);
 
-        SceneManager.LoadScene(1);
+        if (modeString.Equals("Easy"))
+        {
+            SceneManager.LoadScene(1);
+            currentScene = 1;
+        }
+        else if (modeString.Equals("Hard"))
+        {
+            SceneManager.LoadScene(6);
+            currentScene = 6;
+        }
 
         pauseCanvas.SetActive(true);
 
         menuCanvas.SetActive(false);
-
-        currentScene = 1;
 
         AudioManager.Instance.PlayBackground(AudioManager.Instance.level1);
     }

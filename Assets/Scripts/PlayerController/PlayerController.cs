@@ -223,7 +223,6 @@ public class PlayerController : MonoBehaviour
     }
 
     // BAN 
-
     private bool canShoot = true;
     public void Shoot()
     {
@@ -349,6 +348,15 @@ public class PlayerController : MonoBehaviour
             LoadTimeBar(numTime);
 
             Destroy(collision.gameObject);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.GetComponent<EnemyInfo>().DecreaseHealth(100f);
+            playerInfo.DecreaseHealth(100f);
         }
     }
 }
